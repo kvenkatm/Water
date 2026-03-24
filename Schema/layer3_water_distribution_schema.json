@@ -1,0 +1,328 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Layer 3: Water Distribution and Delivery",
+  "description": "Schema for the delivery of treated/stored water to customers through pipes and other infrastructure, organized by pressure zones within the utility's water service area.",
+  "type": "object",
+  "properties": {
+    "current_pressure_zones": {
+      "description": "Array of pressure zones currently in service within the utility service area.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/pressure_zone"
+      }
+    },
+    "current_pressure_zones_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the overall list of current pressure zones in service."
+    },
+
+    "future_pressure_zone_changes": {
+      "description": "Optional. Planned additions or expansions to pressure zones expected in the future.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "change_type",
+          "zone_name"
+        ],
+        "properties": {
+          "change_type": {
+            "description": "Whether this entry represents an entirely new pressure zone or an expansion of an existing one.",
+            "type": "string",
+            "enum": [
+              "new_zone",
+              "expansion_of_existing_zone"
+            ]
+          },
+          "zone_name": {
+            "description": "Name or identifier of the new or expanding pressure zone.",
+            "type": "string",
+            "minLength": 1
+          },
+          "existing_zone_reference": {
+            "description": "If change_type is 'expansion_of_existing_zone', the name of the existing zone being expanded.",
+            "type": "string"
+          },
+          "expected_year": {
+            "description": "Expected year the addition or expansion will be completed.",
+            "type": "integer",
+            "minimum": 1900,
+            "maximum": 2200
+          },
+          "expected_year_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the expected completion year."
+          },
+          "description": {
+            "description": "Free-text description of the planned change (scope, rationale, affected areas).",
+            "type": "string"
+          },
+          "description_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the description of the planned change."
+          },
+          "planned_zone_capacity": {
+            "$ref": "#/$defs/volume_measurement",
+            "description": "Planned total capacity of the new or expanded zone, if known."
+          },
+          "planned_zone_capacity_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the planned zone capacity."
+          },
+          "geographic_area": {
+            "$ref": "#/$defs/geographic_area",
+            "description": "Geographic area the new or expanded zone will cover, if known."
+          },
+          "geographic_area_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the geographic area of the planned change."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "future_pressure_zone_changes_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the overall list of future pressure zone additions/expansions."
+    }
+  },
+  "additionalProperties": false,
+
+  "$defs": {
+    "pressure_zone": {
+      "description": "A single pressure zone within the utility service area, including its capacity, demand, fire flow reserve, and geographic coverage.",
+      "type": "object",
+      "required": [
+        "zone_name"
+      ],
+      "properties": {
+        "zone_name": {
+          "description": "Name or identifier of the pressure zone.",
+          "type": "string",
+          "minLength": 1
+        },
+        "zone_name_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the zone identification."
+        },
+
+        "geographic_area": {
+          "$ref": "#/$defs/geographic_area",
+          "description": "The specific geographic area covered by this pressure zone."
+        },
+        "geographic_area_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the geographic area of this zone."
+        },
+
+        "hydraulic_pressure": {
+          "description": "Hydraulic pressure maintained within this zone, if available.",
+          "type": "object",
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "description": "Numeric pressure value.",
+              "type": "number",
+              "minimum": 0
+            },
+            "unit": {
+              "description": "Unit of pressure measurement.",
+              "type": "string",
+              "enum": [
+                "psi",
+                "kilopascals",
+                "bar",
+                "meters_of_head",
+                "feet_of_head",
+                "other"
+              ]
+            },
+            "unit_other_description": {
+              "description": "Description when unit is 'other'.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "hydraulic_pressure_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the hydraulic pressure data."
+        },
+
+        "total_zone_capacity": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Defined total capacity of this zone at the specified pressure, based on transmission mains, pump stations, and elevated storage."
+        },
+        "total_zone_capacity_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the total zone capacity."
+        },
+
+        "current_total_peak_demand": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Current total peak demand (residential + commercial + industrial) within this zone."
+        },
+        "current_total_peak_demand_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the current total peak demand."
+        },
+
+        "fire_flow_reserve": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Fire flow reserve allocated for this zone."
+        },
+        "fire_flow_reserve_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the fire flow reserve."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "geographic_area": {
+      "description": "A geographic area definition. Provide one or more representations: a text description, a bounding box, and/or a GeoJSON polygon/multipolygon boundary.",
+      "type": "object",
+      "properties": {
+        "description": {
+          "description": "Free-text description of the geographic area (e.g., 'North of Highway 290, west of MoPac Expressway').",
+          "type": "string"
+        },
+        "bounding_box": {
+          "description": "Rectangular bounding box enclosing the area (WGS 84 decimal degrees).",
+          "type": "object",
+          "required": [
+            "north_latitude",
+            "south_latitude",
+            "east_longitude",
+            "west_longitude"
+          ],
+          "properties": {
+            "north_latitude": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "south_latitude": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "east_longitude": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "west_longitude": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            }
+          },
+          "additionalProperties": false
+        },
+        "geojson_boundary": {
+          "description": "GeoJSON Polygon or MultiPolygon geometry defining the zone boundary.",
+          "type": "object",
+          "required": [
+            "type",
+            "coordinates"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "Polygon",
+                "MultiPolygon"
+              ]
+            },
+            "coordinates": {
+              "description": "GeoJSON coordinate array. For Polygon: [[[lon,lat], ...]]. For MultiPolygon: [[[[lon,lat], ...]]]."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "volume_measurement": {
+      "description": "A numeric volume or flow-rate value with its unit of measurement.",
+      "type": "object",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "description": "Numeric volume or flow-rate value.",
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "description": "Unit of volume or flow-rate measurement.",
+          "type": "string",
+          "enum": [
+            "million_gallons_per_day",
+            "gallons_per_day",
+            "gallons_per_minute",
+            "million_gallons",
+            "gallons",
+            "cubic_meters_per_day",
+            "cubic_meters_per_hour",
+            "liters_per_day",
+            "liters_per_second",
+            "liters_per_minute",
+            "megaliters_per_day",
+            "cubic_meters",
+            "liters",
+            "megaliters",
+            "acre_feet",
+            "acre_feet_per_day",
+            "acre_feet_per_year",
+            "other"
+          ]
+        },
+        "unit_other_description": {
+          "description": "Description when unit is 'other'.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "citation": {
+      "description": "A data source citation consisting of a document title, URL, and optional page number.",
+      "type": "object",
+      "required": [
+        "document_title",
+        "document_url"
+      ],
+      "properties": {
+        "document_title": {
+          "description": "Title of the source document.",
+          "type": "string",
+          "minLength": 1
+        },
+        "document_url": {
+          "description": "URL of the source document.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "page_number": {
+          "description": "Optional page number within the source document.",
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

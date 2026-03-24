@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Layer 2: Treatment and Storage Systems",
+  "description": "Schema for a water utility's capacity for treating and storing water from input sources, including average and peak demand within the utility's water service area.",
+  "type": "object",
+  "required": [
+    "current_year",
+    "treatment_plants",
+    "total_maximum_daily_treatment_capacity",
+    "current_average_daily_demand",
+    "current_peak_daily_demand",
+    "storage_facilities",
+    "total_treated_water_storage_capacity"
+  ],
+  "properties": {
+    "current_year": {
+      "description": "Year of the current data.",
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2100
+    },
+    "current_year_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the current year of data."
+    },
+
+    "treatment_plants": {
+      "description": "Array of individual water treatment plants with their capacities and water sources.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "plant_name",
+          "maximum_daily_treatment_capacity",
+          "water_source"
+        ],
+        "properties": {
+          "plant_name": {
+            "description": "Name of the water treatment plant.",
+            "type": "string",
+            "minLength": 1
+          },
+          "maximum_daily_treatment_capacity": {
+            "$ref": "#/$defs/volume_measurement",
+            "description": "Maximum daily treatment capacity of this plant."
+          },
+          "maximum_daily_treatment_capacity_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for this plant's maximum daily treatment capacity."
+          },
+          "water_source": {
+            "description": "The specific named water source used by this plant.",
+            "type": "object",
+            "required": [
+              "source_name",
+              "source_type"
+            ],
+            "properties": {
+              "source_name": {
+                "description": "Name of the water source (e.g., 'Colorado River', 'Edwards Aquifer', 'Barren River Lake').",
+                "type": "string",
+                "minLength": 1
+              },
+              "source_type": {
+                "description": "Category of the water source.",
+                "type": "string",
+                "enum": [
+                  "river",
+                  "aquifer",
+                  "raw_water_storage_reservoir",
+                  "recycled_water",
+                  "reclaimed_water",
+                  "desalinated_water",
+                  "other"
+                ]
+              },
+              "source_type_other_description": {
+                "description": "Description when source_type is 'other'.",
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "water_source_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for this plant's water source information."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "total_maximum_daily_treatment_capacity": {
+      "$ref": "#/$defs/volume_measurement",
+      "description": "Total maximum daily treatment capacity across all water treatment plants."
+    },
+    "total_maximum_daily_treatment_capacity_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the total maximum daily treatment capacity."
+    },
+
+    "current_average_daily_demand": {
+      "$ref": "#/$defs/volume_measurement",
+      "description": "Current average daily water demand within the service area."
+    },
+    "current_average_daily_demand_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the current average daily demand."
+    },
+
+    "current_peak_daily_demand": {
+      "$ref": "#/$defs/volume_measurement",
+      "description": "Current peak daily water demand across all seasons of the year."
+    },
+    "current_peak_daily_demand_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the current peak daily demand."
+    },
+
+    "storage_facilities": {
+      "description": "Array of individual treated water storage tanks and reservoirs with their capacities and supplying treatment plants.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "facility_name",
+          "storage_capacity",
+          "supplying_treatment_plants"
+        ],
+        "properties": {
+          "facility_name": {
+            "description": "Name of the storage tank or reservoir.",
+            "type": "string",
+            "minLength": 1
+          },
+          "storage_capacity": {
+            "$ref": "#/$defs/volume_measurement",
+            "description": "Storage capacity of this facility."
+          },
+          "storage_capacity_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for this facility's storage capacity."
+          },
+          "supplying_treatment_plants": {
+            "description": "Names of the water treatment plants (one or more) that supply treated water to this storage facility.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "supplying_treatment_plants_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for which treatment plants supply this facility."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "total_treated_water_storage_capacity": {
+      "$ref": "#/$defs/volume_measurement",
+      "description": "Total treated water storage capacity across all tanks and reservoirs."
+    },
+    "total_treated_water_storage_capacity_source": {
+      "$ref": "#/$defs/citation",
+      "description": "Citation for the total treated water storage capacity."
+    },
+
+    "future_projections": {
+      "description": "Optional future projections for treatment capacity, demand, and storage.",
+      "type": "object",
+      "required": [
+        "future_year"
+      ],
+      "properties": {
+        "future_year": {
+          "description": "The projected future year for these estimates.",
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "future_year_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the future projection year."
+        },
+        "future_total_maximum_daily_treatment_capacity": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Projected total maximum daily treatment capacity across all water treatment plants."
+        },
+        "future_total_maximum_daily_treatment_capacity_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the projected total treatment capacity."
+        },
+        "future_average_daily_demand": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Projected future average daily water demand."
+        },
+        "future_average_daily_demand_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the projected average daily demand."
+        },
+        "future_peak_daily_demand": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Projected future peak daily water demand."
+        },
+        "future_peak_daily_demand_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the projected peak daily demand."
+        },
+        "future_total_treated_water_storage_capacity": {
+          "$ref": "#/$defs/volume_measurement",
+          "description": "Projected total treated water storage capacity across all tanks and reservoirs."
+        },
+        "future_total_treated_water_storage_capacity_source": {
+          "$ref": "#/$defs/citation",
+          "description": "Citation for the projected total storage capacity."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+
+  "$defs": {
+    "volume_measurement": {
+      "description": "A numeric volume value with its unit of measurement.",
+      "type": "object",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "description": "Numeric volume value.",
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "description": "Unit of volume measurement.",
+          "type": "string",
+          "enum": [
+            "million_gallons_per_day",
+            "gallons_per_day",
+            "million_gallons",
+            "gallons",
+            "cubic_meters_per_day",
+            "liters_per_day",
+            "megaliters_per_day",
+            "cubic_meters",
+            "liters",
+            "megaliters",
+            "acre_feet",
+            "acre_feet_per_day",
+            "other"
+          ]
+        },
+        "unit_other_description": {
+          "description": "Description when unit is 'other'.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "citation": {
+      "description": "A data source citation consisting of a document title, URL, and optional page number.",
+      "type": "object",
+      "required": [
+        "document_title",
+        "document_url"
+      ],
+      "properties": {
+        "document_title": {
+          "description": "Title of the source document.",
+          "type": "string",
+          "minLength": 1
+        },
+        "document_url": {
+          "description": "URL of the source document.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "page_number": {
+          "description": "Optional page number within the source document.",
+          "type": ["integer", "string"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

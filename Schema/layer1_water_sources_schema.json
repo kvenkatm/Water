@@ -1,0 +1,219 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Layer 1: Water Sources",
+  "description": "Schema for the water sources at the input of a utility's water system, including source identification, proportional usage, water rights, and optional withdrawal locations.",
+  "type": "object",
+  "required": [
+    "water_sources"
+  ],
+  "properties": {
+    "water_sources": {
+      "description": "Array of individual natural or engineered water sources used by the water system.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source_name",
+          "source_type",
+          "proportion_of_current_demand",
+          "water_rights"
+        ],
+        "properties": {
+          "source_name": {
+            "description": "Name of the water source (e.g., 'Colorado River', 'Edwards Aquifer', 'Iron Bridge Reservoir').",
+            "type": "string",
+            "minLength": 1
+          },
+          "source_name_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the identification of this water source."
+          },
+          "source_type": {
+            "description": "Category of the water source.",
+            "type": "string",
+            "enum": [
+              "river",
+              "aquifer",
+              "raw_water_storage_reservoir",
+              "recycled_water",
+              "reclaimed_water",
+              "desalinated_water",
+              "other"
+            ]
+          },
+          "source_type_other_description": {
+            "description": "Description when source_type is 'other'.",
+            "type": "string"
+          },
+
+          "proportion_of_current_demand": {
+            "description": "The proportion of total current water demand fulfilled by this source, expressed as a percentage (0–100).",
+            "type": "object",
+            "required": [
+              "percentage"
+            ],
+            "properties": {
+              "percentage": {
+                "description": "Percentage of total current demand supplied by this source.",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          },
+          "proportion_of_current_demand_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the proportion of demand fulfilled by this source."
+          },
+
+          "water_rights": {
+            "description": "The maximum quantity the utility is permitted to draw from this source under current water rights. One or more time-period limits may be specified (e.g., daily, monthly, annual).",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "permitted_maximum",
+                "time_period"
+              ],
+              "properties": {
+                "permitted_maximum": {
+                  "$ref": "#/$defs/volume_measurement",
+                  "description": "Maximum permitted withdrawal quantity for the given time period."
+                },
+                "time_period": {
+                  "description": "The time period over which the permitted maximum applies.",
+                  "type": "string",
+                  "enum": [
+                    "per_day",
+                    "per_month",
+                    "per_year",
+                    "other"
+                  ]
+                },
+                "time_period_other_description": {
+                  "description": "Description when time_period is 'other'.",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "water_rights_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the water rights information for this source."
+          },
+
+          "withdrawal_locations": {
+            "description": "Optional. Locations at which water is withdrawn from this source.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "latitude",
+                "longitude"
+              ],
+              "properties": {
+                "location_name": {
+                  "description": "Optional descriptive name for the withdrawal point (e.g., 'North Intake', 'Well Field 3').",
+                  "type": "string"
+                },
+                "latitude": {
+                  "description": "Latitude of the withdrawal point in decimal degrees (WGS 84).",
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "longitude": {
+                  "description": "Longitude of the withdrawal point in decimal degrees (WGS 84).",
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "withdrawal_locations_source": {
+            "$ref": "#/$defs/citation",
+            "description": "Citation for the withdrawal location data."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+
+  "$defs": {
+    "volume_measurement": {
+      "description": "A numeric volume value with its unit of measurement.",
+      "type": "object",
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "description": "Numeric volume value.",
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "description": "Unit of volume measurement.",
+          "type": "string",
+          "enum": [
+            "million_gallons_per_day",
+            "gallons_per_day",
+            "million_gallons",
+            "gallons",
+            "cubic_meters_per_day",
+            "liters_per_day",
+            "megaliters_per_day",
+            "cubic_meters",
+            "liters",
+            "megaliters",
+            "acre_feet",
+            "acre_feet_per_day",
+            "acre_feet_per_year",
+            "other"
+          ]
+        },
+        "unit_other_description": {
+          "description": "Description when unit is 'other'.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "citation": {
+      "description": "A data source citation consisting of a document title, URL, and optional page number.",
+      "type": "object",
+      "required": [
+        "document_title",
+        "document_url"
+      ],
+      "properties": {
+        "document_title": {
+          "description": "Title of the source document.",
+          "type": "string",
+          "minLength": 1
+        },
+        "document_url": {
+          "description": "URL of the source document.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "page_number": {
+          "description": "Optional page number within the source document.",
+          "type": ["integer", "string"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
