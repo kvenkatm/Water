@@ -1,0 +1,35 @@
+column_name,json_path,data_type,required,allowed_values,description
+location_name,locations[].location_name,string,yes,,Name of the city / metro area / county
+location_type,locations[].location_type,string,yes,"city, metro, county, district, other",Geographic classification of the location
+state_or_region,locations[].state_or_region,string,yes,,State / province / administrative region
+water_utility_name,locations[].water_utility.utility_name,string,yes,,Official name of the water utility or water authority
+water_utility_citation_title,locations[].water_utility.citation.document_title,string,yes,,Title of the source document for the utility name
+water_utility_citation_url,locations[].water_utility.citation.document_url,uri,yes,,URL of the source document for the utility name
+water_utility_citation_page,locations[].water_utility.citation.page_number,string,no,,Page number or range (optional)
+source_name,locations[].water_sources[].source_name,string,yes,,"Name of the water source (e.g., Colorado River, Edwards Aquifer)"
+source_type,locations[].water_sources[].source_type,string,yes,"river, aquifer, watershed, raw_water_reservoir, recycled_water, reclaimed_water, desalinated_water, lake, other",Category of the water source
+contributing_source_water,locations[].water_sources[].contributing_source_water,string,no,,"For engineered sources, the originating natural source water (e.g., Salt River for a reservoir it feeds). Leave blank if not applicable."
+percentage_of_supply,locations[].water_sources[].percentage_of_supply,number,yes,,Percentage (0–100) of total current water demand fulfilled by this source. Leave blank if unknown.
+source_citation_title,locations[].water_sources[].citation.document_title,string,yes,,Title of the source document for this water source record
+source_citation_url,locations[].water_sources[].citation.document_url,uri,yes,,URL of the source document for this water source record
+source_citation_page,locations[].water_sources[].citation.page_number,string,no,,Page number or range (optional)
+max_daily_treatment_capacity_value,locations[].max_daily_treatment_capacity.value,number,yes,,Maximum total daily water treatment capacity across all WTPs
+max_daily_treatment_capacity_unit,locations[].max_daily_treatment_capacity.unit,string,yes,"MGD, GPD, gallons, million_gallons, billion_gallons, cubic_feet_per_second, acre_feet, acre_feet_per_day, acre_feet_per_year, liters, liters_per_day, megaliters_per_day, cubic_meters, cubic_meters_per_day, million_cubic_meters, million_liters, million_liters_per_day",Unit of measurement
+max_daily_treatment_capacity_citation_title,locations[].max_daily_treatment_capacity.citation.document_title,string,yes,,Citation title for max daily treatment capacity
+max_daily_treatment_capacity_citation_url,locations[].max_daily_treatment_capacity.citation.document_url,uri,yes,,Citation URL for max daily treatment capacity
+max_daily_treatment_capacity_citation_page,locations[].max_daily_treatment_capacity.citation.page_number,string,no,,Citation page number (optional)
+average_daily_demand_value,locations[].average_daily_demand.value,number,yes,,Average daily water demand
+average_daily_demand_unit,locations[].average_daily_demand.unit,string,yes,(same volume_unit enum as above),Unit of measurement
+average_daily_demand_citation_title,locations[].average_daily_demand.citation.document_title,string,yes,,Citation title for average daily demand
+average_daily_demand_citation_url,locations[].average_daily_demand.citation.document_url,uri,yes,,Citation URL for average daily demand
+average_daily_demand_citation_page,locations[].average_daily_demand.citation.page_number,string,no,,Citation page number (optional)
+peak_daily_demand_value,locations[].peak_daily_demand.value,number,yes,,Peak daily water demand across all seasons
+peak_daily_demand_unit,locations[].peak_daily_demand.unit,string,yes,(same volume_unit enum as above),Unit of measurement
+peak_daily_demand_citation_title,locations[].peak_daily_demand.citation.document_title,string,yes,,Citation title for peak daily demand
+peak_daily_demand_citation_url,locations[].peak_daily_demand.citation.document_url,uri,yes,,Citation URL for peak daily demand
+peak_daily_demand_citation_page,locations[].peak_daily_demand.citation.page_number,string,no,,Citation page number (optional)
+total_treated_storage_capacity_value,locations[].total_treated_storage_capacity.value,number,yes,,Total storage capacity for treated/finished water
+total_treated_storage_capacity_unit,locations[].total_treated_storage_capacity.unit,string,yes,(same volume_unit enum as above),Unit of measurement
+total_treated_storage_capacity_citation_title,locations[].total_treated_storage_capacity.citation.document_title,string,yes,,Citation title for treated storage capacity
+total_treated_storage_capacity_citation_url,locations[].total_treated_storage_capacity.citation.document_url,uri,yes,,Citation URL for treated storage capacity
+total_treated_storage_capacity_citation_page,locations[].total_treated_storage_capacity.citation.page_number,string,no,,Citation page number (optional)

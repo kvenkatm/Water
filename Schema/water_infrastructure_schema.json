@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Water Sources and Delivery Systems Schema",
+  "description": "Schema for structured data on water sources and water delivery systems across multiple locations.",
+  "type": "object",
+  "required": ["schema_version", "locations"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Version of this schema.",
+      "const": "1.0.0"
+    },
+    "locations": {
+      "type": "array",
+      "description": "Array of location records, each representing a city, metro area, or county.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/location"
+      }
+    }
+  },
+  "$defs": {
+    "citation": {
+      "type": "object",
+      "description": "Source citation for a data item.",
+      "required": ["document_title", "document_url"],
+      "properties": {
+        "document_title": {
+          "type": "string",
+          "description": "Title of the source document."
+        },
+        "document_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the source document."
+        },
+        "page_number": {
+          "type": ["string", "null"],
+          "description": "Page number or range within the source document (optional).",
+          "examples": ["12", "45-47", "Appendix B"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "volume_unit": {
+      "type": "string",
+      "description": "Unit of measurement for volume or flow rate.",
+      "enum": [
+        "MGD",
+        "GPD",
+        "gallons",
+        "million_gallons",
+        "billion_gallons",
+        "cubic_feet_per_second",
+        "acre_feet",
+        "acre_feet_per_day",
+        "acre_feet_per_year",
+        "liters",
+        "liters_per_day",
+        "megaliters_per_day",
+        "cubic_meters",
+        "cubic_meters_per_day",
+        "million_cubic_meters",
+        "million_liters",
+        "million_liters_per_day"
+      ]
+    },
+    "water_source": {
+      "type": "object",
+      "description": "A single water source contributing to the system's supply.",
+      "required": ["source_name", "source_type", "percentage_of_supply", "citation"],
+      "properties": {
+        "source_name": {
+          "type": "string",
+          "description": "Name of the water source (e.g., 'Colorado River', 'Edwards Aquifer', 'Salt River Project Reservoir System')."
+        },
+        "source_type": {
+          "type": "string",
+          "description": "Category of the water source.",
+          "enum": [
+            "river",
+            "aquifer",
+            "watershed",
+            "raw_water_reservoir",
+            "recycled_water",
+            "reclaimed_water",
+            "desalinated_water",
+            "lake",
+            "other"
+          ]
+        },
+        "contributing_source_water": {
+          "type": ["string", "null"],
+          "description": "For engineered sources (reservoirs, canals), the originating natural source water (e.g., 'Salt River' for a reservoir fed by the Salt River). Null if not applicable or if the source is itself a primary natural source."
+        },
+        "percentage_of_supply": {
+          "type": ["number", "null"],
+          "description": "Percentage of total current water demand fulfilled by this source. Null if unknown.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "citation": {
+          "$ref": "#/$defs/citation"
+        }
+      },
+      "additionalProperties": false
+    },
+    "measured_volume": {
+      "type": "object",
+      "description": "A volume or flow-rate value with its unit and source citation.",
+      "required": ["value", "unit", "citation"],
+      "properties": {
+        "value": {
+          "type": ["number", "null"],
+          "description": "Numeric value. Null if data is unavailable."
+        },
+        "unit": {
+          "$ref": "#/$defs/volume_unit"
+        },
+        "citation": {
+          "$ref": "#/$defs/citation"
+        }
+      },
+      "additionalProperties": false
+    },
+    "location": {
+      "type": "object",
+      "description": "Water system data for a single city, metro area, or county.",
+      "required": [
+        "location_name",
+        "location_type",
+        "state_or_region",
+        "water_utility",
+        "water_sources",
+        "max_daily_treatment_capacity",
+        "average_daily_demand",
+        "peak_daily_demand",
+        "total_treated_storage_capacity"
+      ],
+      "properties": {
+        "location_name": {
+          "type": "string",
+          "description": "Name of the city, metro area, or county."
+        },
+        "location_type": {
+          "type": "string",
+          "description": "Geographic classification of the location.",
+          "enum": ["city", "metro", "county", "district", "other"]
+        },
+        "state_or_region": {
+          "type": "string",
+          "description": "State, province, or administrative region."
+        },
+        "water_utility": {
+          "type": "object",
+          "description": "The water utility or authority operating the delivery system.",
+          "required": ["utility_name", "citation"],
+          "properties": {
+            "utility_name": {
+              "type": "string",
+              "description": "Official name of the water utility or water authority."
+            },
+            "citation": {
+              "$ref": "#/$defs/citation"
+            }
+          },
+          "additionalProperties": false
+        },
+        "water_sources": {
+          "type": "array",
+          "description": "All direct natural or engineered water sources supplying the system.",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/water_source"
+          }
+        },
+        "max_daily_treatment_capacity": {
+          "allOf": [{ "$ref": "#/$defs/measured_volume" }],
+          "description": "Maximum total daily water treatment capacity across all water treatment plants in the system."
+        },
+        "average_daily_demand": {
+          "allOf": [{ "$ref": "#/$defs/measured_volume" }],
+          "description": "Average daily water demand served by the system."
+        },
+        "peak_daily_demand": {
+          "allOf": [{ "$ref": "#/$defs/measured_volume" }],
+          "description": "Peak daily water demand across all seasons of the year."
+        },
+        "total_treated_storage_capacity": {
+          "allOf": [{ "$ref": "#/$defs/measured_volume" }],
+          "description": "Total storage capacity for treated (finished) water in the system."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
