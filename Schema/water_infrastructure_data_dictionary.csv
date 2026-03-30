@@ -8,6 +8,8 @@ water_utility_citation_url,locations[].water_utility.citation.document_url,uri,y
 water_utility_citation_page,locations[].water_utility.citation.page_number,string,no,,Page number or range (optional)
 source_name,locations[].water_sources[].source_name,string,yes,,"Name of the water source (e.g., Colorado River, Edwards Aquifer)"
 source_type,locations[].water_sources[].source_type,string,yes,"river, aquifer, watershed, raw_water_reservoir, recycled_water, reclaimed_water, desalinated_water, lake, other",Category of the water source
+source_latitude,locations[].water_sources[].geo_location.latitude,number,yes,"-90 to 90",Latitude of the water source in decimal degrees (WGS 84). Positive = North.
+source_longitude,locations[].water_sources[].geo_location.longitude,number,yes,"-180 to 180",Longitude of the water source in decimal degrees (WGS 84). Positive = East.
 contributing_source_water,locations[].water_sources[].contributing_source_water,string,no,,"For engineered sources, the originating natural source water (e.g., Salt River for a reservoir it feeds). Leave blank if not applicable."
 percentage_of_supply,locations[].water_sources[].percentage_of_supply,number,yes,,Percentage (0–100) of total current water demand fulfilled by this source. Leave blank if unknown.
 source_citation_title,locations[].water_sources[].citation.document_title,string,yes,,Title of the source document for this water source record
